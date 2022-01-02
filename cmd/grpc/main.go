@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
+	appGrpc "github.com/backendgolang/searchapp/pkg/grpc"
 	"github.com/backendgolang/searchapp/util/config"
 )
 
@@ -16,8 +16,12 @@ func main() {
 		log.Fatalln(msg)
 	}
 
-	//get port from config file
-	port := fmt.Sprintf(":%s", config.Get().Port.GRPC)
-	fmt.Println("[GRPC] starting http service on ", port)
-	log.Fatalln(http.ListenAndServe(port, nil))
+	grpcHandler := appGrpc.New(appGrpc.Option{
+		Address: fmt.Sprintf(":%s", config.Get().Port.GRPC),
+	})
+
+	err = grpcHandler.Start()
+	if err != nil {
+		log.Fatalln("Fail to start grpc handler,err: ", err.Error())
+	}
 }
