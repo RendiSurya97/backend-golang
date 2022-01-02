@@ -3,6 +3,8 @@ package controller
 import (
 	"log"
 	"sync"
+
+	"github.com/pkg/errors"
 )
 
 func (c *ctrl) GetByTitle(title string, page int64) (result MovieResult, err error) {
@@ -42,11 +44,15 @@ func (c *ctrl) GetByTitle(title string, page int64) (result MovieResult, err err
 
 		mErr := movieCore.SaveLog(title)
 		if mErr != nil {
-			log.Println("[Controller][SaveLog] failed save to DB: ", err.Error())
+			log.Println("[Controller][SaveLog] failed save to DB: ", mErr.Error())
 		}
 	}()
 
 	wg.Wait()
 
-	return result, err
+	if err != nil {
+		return result, errors.Wrap(err, "error when get movie")
+	}
+
+	return result, nil
 }

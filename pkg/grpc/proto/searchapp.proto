@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package searchapp;
+
+service SearchApp {
+    rpc GetMovieByTitle (MovieRequest) returns (MovieResponse) {}
+}
+
+message MovieRequest {
+    string title = 1;
+    int64 page = 2;
+}
+
+message MovieResponse {
+    repeated MovieDetail search = 1;
+    string totalResults = 2;
+    string response = 3;
+}
+
+message MovieDetail {
+    string title = 1;
+    string year = 2;
+    string imdbID = 3;
+    string type = 4;
+    string poster = 5;
+}
