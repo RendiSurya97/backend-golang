@@ -5,11 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	appHttp "github.com/backendgolang/searchapp/pkg/http"
+
 	"github.com/backendgolang/searchapp/util/config"
+	"github.com/julienschmidt/httprouter"
 )
 
 func main() {
-
 	//Init Config
 	err := config.InitConfig()
 	if err != nil {
@@ -17,13 +19,15 @@ func main() {
 		log.Fatalln(msg)
 	}
 
-	// assign routes
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "pong")
-	})
+	//init http
+	appHttp.Init()
+
+	// routing
+	router := httprouter.New()
+	appHttp.AssignRoutes(router)
 
 	//get port from config file
 	port := fmt.Sprintf(":%s", config.Get().Port.HTTP)
 	fmt.Println("[HTTP] starting http service on ", port)
-	http.ListenAndServe(port, nil)
+	log.Fatalln(http.ListenAndServe(port, router))
 }

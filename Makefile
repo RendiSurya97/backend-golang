@@ -7,3 +7,13 @@ http: FORCE
 	@echo "executing http..."
 	@./cmd/http/http
 	@echo "http is running."
+
+grpc: FORCE
+	@echo " >> building grpc binaries..."
+	@go build -o cmd/grpc/grpc cmd/grpc/main.go
+	@echo " >> grpc built."
+	@echo "executing grpc..."
+	@./cmd/grpc/grpc
+	@echo "grpc is running."
+
+.DEFAULT_GOAL := http
